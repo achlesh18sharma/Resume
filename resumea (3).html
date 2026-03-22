@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Achlesh Sharma · BBA (IIM Bangalore)</title>
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* ----- CSS variables for theming (5 professional themes) ----- */
+    :root {
+      /* theme 1: blue starlight (default) */
+      --bg-primary: #0A0C0E;
+      --bg-card: #131C26;
+      --bg-soft: #111B24;
+      --bg-element: #1F2F3F;
+      --border-color: #2F3F50;
+      --border-light: #3D5E7F;
+      --accent: #77A9D9;
+      --accent-soft: #7CAAD9;
+      --text-primary: #E0ECFB;
+      --text-secondary: #B0CAE6;
+      --text-bright: #FFFFFF;
+      --star-color: rgba(255, 255, 255, 0.7);
+      --star-tail: rgba(255, 255, 255, 0.3);
+    }
+
+    /* theme 2: deep emerald */
+    .theme-emerald {
+      --bg-primary: #0C100E;
+      --bg-card: #14231F;
+      --bg-soft: #0F1E1A;
+      --bg-element: #1B332B;
+      --border-color: #28554A;
+      --border-light: #2F6B5C;
+      --accent: #5DB0A3;
+      --accent-soft: #6FC1B3;
+      --text-primary: #DAF2EC;
+      --text-secondary: #AAD9CF;
+      --text-bright: #FFFFFF;
+      --star-color: rgba(170, 217, 207, 0.7);
+      --star-tail: rgba(90, 150, 140, 0.3);
+    }
+
+    /* theme 3: royal graphite (purple accents) */
+    .theme-graphite {
+      --bg-primary: #0E0C12;
+      --bg-card: #1E1A2A;
+      --bg-soft: #161225;
+      --bg-element: #2A2340;
+      --border-color: #4D3F6B;
+      --border-light: #6950A0;
+      --accent: #B097E6;
+      --accent-soft: #9F82DB;
+      --text-primary: #EEE6FF;
+      --text-secondary: #CBBDF2;
+      --text-bright: #FFFFFF;
+      --star-color: rgba(203, 189, 242, 0.7);
+      --star-tail: rgba(130, 100, 200, 0.3);
+    }
+
+    /* theme 4: warm charcoal (copper accents) */
+    .theme-copper {
+      --bg-primary: #12100E;
+      --bg-card: #241F1A;
+      --bg-soft: #1D1713;
+      --bg-element: #352B23;
+      --border-color: #735F4D;
+      --border-light: #A58364;
+      --accent: #DCB185;
+      --accent-soft: #CF9F70;
+      --text-primary: #FFF2E5;
+      --text-secondary: #F0DBC9;
+      --text-bright: #FFFFFF;
+      --star-color: rgba(240, 219, 201, 0.7);
+      --star-tail: rgba(180, 140, 110, 0.3);
+    }
+
+    /* theme 5: midnight teal */
+    .theme-teal {
+      --bg-primary: #0A1217;
+      --bg-card: #12232F;
+      --bg-soft: #0D1D27;
+      --bg-element: #1B3442;
+      --border-color: #2D5B70;
+      --border-light: #36809E;
+      --accent: #60C5D9;
+      --accent-soft: #4FB0C9;
+      --text-primary: #E0F2FA;
+      --text-secondary: #B8DFF0;
+      --text-bright: #FFFFFF;
+      --star-color: rgba(184, 223, 240, 0.7);
+      --star-tail: rgba(70, 150, 180, 0.3);
+    }
+
+    /* ----- starfall animation background ----- */
+    .star-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .star {
+      position: absolute;
+      background: linear-gradient(45deg, transparent, var(--star-color));
+      filter: drop-shadow(0 0 6px var(--accent-soft));
+      width: 2px;
+      height: 80px;
+      border-radius: 50%;
+      opacity: 0.5;
+      animation: fall linear infinite;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(-100px) rotate(15deg);
+        opacity: 0.3;
+      }
+      20% { opacity: 0.8; }
+      80% { opacity: 0.6; }
+      100% {
+        transform: translateY(100vh) rotate(25deg);
+        opacity: 0;
+      }
+    }
+
+    .star1 { width: 1px; height: 50px; animation-duration: 6s; }
+    .star2 { width: 2px; height: 90px; animation-duration: 10s; }
+    .star3 { width: 1.5px; height: 120px; animation-duration: 14s; }
+    .star4 { width: 2.5px; height: 70px; animation-duration: 8s; }
+    .star5 { width: 1px; height: 150px; animation-duration: 18s; }
+
+    /* ----- base styles with variable application ----- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.1s ease;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.55;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 2.2rem 2rem;
+      width: 100%;
+      flex: 1;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* theme switcher */
+    .theme-panel {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 1.5rem;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 3;
+    }
+
+    .theme-label {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .theme-buttons {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .theme-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 2px solid var(--border-light);
+      cursor: pointer;
+      transition: transform 0.15s, border-color 0.2s;
+      background: var(--bg-element);
+    }
+
+    .theme-btn:hover {
+      transform: scale(1.13);
+      border-color: var(--accent);
+    }
+
+    .theme-btn.blue { background: #2F5F8F; }
+    .theme-btn.emerald { background: #1D6B5B; }
+    .theme-btn.graphite { background: #6B4F9F; }
+    .theme-btn.copper { background: #B47C5A; }
+    .theme-btn.teal { background: #2F8F9F; }
+
+    /* navigation */
+    .nav-bar {
+      display: flex;
+      gap: 2.8rem;
+      margin-bottom: 2.5rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.75rem;
+    }
+
+    .nav-btn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 1.2rem;
+      font-weight: 450;
+      letter-spacing: -0.01em;
+      padding: 0.5rem 0;
+      cursor: pointer;
+      position: relative;
+      transition: color 0.2s ease;
+    }
+
+    .nav-btn::after {
+      content: '';
+      position: absolute;
+      bottom: -0.8rem;
+      left: 0;
+      width: 100%;
+      height: 2.5px;
+      background: var(--accent);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .nav-btn:hover {
+      color: var(--text-bright);
+    }
+
+    .nav-btn.active {
+      color: var(--text-bright);
+    }
+
+    .nav-btn.active::after {
+      opacity: 1;
+    }
+
+    /* pages */
+    .page {
+      display: none;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .page.active-page {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0.4; transform: translateY(2px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .card {
+      background: var(--bg-card);
+      border-radius: 28px;
+      padding: 2.4rem;
+      box-shadow: 0 25px 40px -15px rgba(0, 0, 0, 0.9);
+      border: 1px solid var(--border-color);
+    }
+
+    /* HOME page */
+    .profile-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2.5rem;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .avatar-frame {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: var(--bg-element);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.8);
+      border: 2px solid var(--border-light);
+    }
+
+    .profile-img {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--accent-soft);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+      display: block;
+    }
+
+    .name-title h1 {
+      font-size: 3rem;
+      font-weight: 550;
+      letter-spacing: -0.02em;
+      color: var(--text-bright);
+      line-height: 1.2;
+      margin-bottom: 0.25rem;
+      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.6);
+    }
+
+    .name-title .sub {
+      font-size: 1.3rem;
+      font-weight: 380;
+      color: var(--text-secondary);
+      border-left: 4px solid var(--accent);
+      padding-left: 1.2rem;
+    }
+
+    .contact-mini {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem 2.5rem;
+      margin: 2rem 0 1.2rem;
+    }
+
+    .contact-mini span {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      color: var(--text-secondary);
+      font-size: 1rem;
+      background: var(--bg-element);
+      padding: 0.5rem 1.2rem 0.5rem 1rem;
+      border-radius: 40px;
+      border: 1px solid var(--border-light);
+    }
+
+    .contact-mini i {
+      font-size: 1.1rem;
+      color: var(--accent-soft);
+    }
+
+    .contact-mini a {
+      color: inherit;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+
+    .contact-mini a:hover {
+      color: var(--accent);
+    }
+
+    /* education block */
+    .edu-section {
+      margin-top: 2.2rem;
+      background: var(--bg-soft);
+      border-radius: 22px;
+      padding: 1.8rem 2rem;
+      border: 1px solid var(--border-color);
+    }
+
+    .edu-section h2 {
+      font-size: 1.7rem;
+      font-weight: 470;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      color: var(--text-bright);
+      border-bottom: 1px dashed var(--border-light);
+      padding-bottom: 0.8rem;
+    }
+
+    .edu-item {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 0.9rem 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .edu-item:last-child {
+      border-bottom: none;
+    }
+
+    .edu-left {
+      font-weight: 470;
+      color: var(--text-primary);
+    }
+
+    .edu-right {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      font-weight: 380;
+    }
+
+    /* Skills page */
+    .skills-header {
+      font-size: 1.9rem;
+      font-weight: 480;
+      color: var(--text-bright);
+      margin-bottom: 2rem;
+      letter-spacing: -0.01em;
+    }
+
+    .skills-compact {
+      display: flex;
+      flex-direction: column;
+      gap: 1.8rem;
+    }
+
+    .skill-row {
+      background: var(--bg-soft);
+      border-radius: 20px;
+      padding: 1.6rem 2rem;
+      border: 1px solid var(--border-color);
+    }
+
+    .skill-row h3 {
+      font-size: 1.5rem;
+      font-weight: 460;
+      color: var(--text-bright);
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--border-light);
+      padding-bottom: 0.5rem;
+    }
+
+    .skill-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem 1.4rem;
+    }
+
+    .skill-badges span, .hobby-badge {
+      background: var(--bg-element);
+      border: 1px solid var(--border-light);
+      padding: 0.45rem 1.4rem;
+      border-radius: 40px;
+      font-size: 1rem;
+      color: var(--text-secondary);
+      transition: 0.15s;
+    }
+
+    .skill-badges span:hover, .hobby-badge:hover {
+      background: var(--border-color);
+      border-color: var(--accent);
+      color: var(--text-bright);
+    }
+
+    .hobby-badge i {
+      color: var(--accent-soft);
+      margin-right: 5px;
+    }
+
+    /* PDF link styling */
+    .pdf-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-card);
+      padding: 0.6rem 1.2rem;
+      border-radius: 40px;
+      border: 1px solid var(--accent);
+      color: var(--text-bright);
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: all 0.2s;
+      margin-top: 1rem;
+    }
+
+    .pdf-link:hover {
+      background: var(--accent);
+      color: var(--bg-primary);
+      transform: translateY(-2px);
+    }
+
+    .pdf-link i {
+      color: var(--accent-soft);
+      font-size: 1.1rem;
+    }
+
+    .pdf-link:hover i {
+      color: var(--bg-primary);
+    }
+
+    /* projects & achievements grid */
+    .proj-achieve-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-top: 1rem;
+    }
+
+    .project-block, .achievement-block {
+      background: var(--bg-soft);
+      border-radius: 26px;
+      padding: 2rem 1.8rem;
+      border: 1px solid var(--border-color);
+    }
+
+    .project-block h3, .achievement-block h3 {
+      font-size: 1.7rem;
+      font-weight: 500;
+      color: var(--text-bright);
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border-light);
+      padding-bottom: 0.7rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .project-card {
+      background: var(--bg-element);
+      border-radius: 22px;
+      padding: 1.5rem;
+      border: 1px solid var(--border-light);
+    }
+
+    .project-card h4 {
+      font-size: 1.5rem;
+      font-weight: 520;
+      color: var(--text-bright);
+      margin-bottom: 0.5rem;
+    }
+
+    .project-card p {
+      color: var(--text-secondary);
+      font-size: 0.98rem;
+      line-height: 1.5;
+      margin-bottom: 0.5rem;
+    }
+
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 1rem 0 1.2rem;
+    }
+
+    .project-tags span {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 0.2rem 1rem;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .achievement-list {
+      list-style: none;
+    }
+
+    .achievement-list li {
+      margin-bottom: 1.2rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      color: var(--text-secondary);
+      border-bottom: 1px dashed var(--border-light);
+      padding-bottom: 0.9rem;
+    }
+
+    .achievement-list li:last-child {
+      border-bottom: none;
+    }
+
+    .achievement-list i {
+      color: var(--accent-soft);
+      width: 24px;
+      font-size: 1.2rem;
+      margin-top: 3px;
+    }
+
+    .footer-note {
+      margin-top: 4rem;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      border-top: 1px solid var(--border-color);
+      padding-top: 2rem;
+    }
+
+    @media (max-width: 800px) {
+      .proj-achieve-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .container { padding: 1.5rem 1.2rem; }
+      .nav-bar { gap: 1.5rem; }
+      .name-title h1 { font-size: 2.4rem; }
+    }
+  </style>
+</head>
+<body class="theme-blue">
+  <!-- Starfall animation container -->
+  <div class="star-container" id="starContainer"></div>
+
+<div class="container">
+  <!-- Theme switcher -->
+  <div class="theme-panel">
+    <span class="theme-label"><i class="fas fa-palette" style="margin-right: 5px;"></i>Theme</span>
+    <div class="theme-buttons">
+      <button class="theme-btn blue" data-theme="theme-blue" title="Blue Starlight"></button>
+      <button class="theme-btn emerald" data-theme="theme-emerald" title="Deep Emerald"></button>
+      <button class="theme-btn graphite" data-theme="theme-graphite" title="Royal Graphite"></button>
+      <button class="theme-btn copper" data-theme="theme-copper" title="Warm Copper"></button>
+      <button class="theme-btn teal" data-theme="theme-teal" title="Midnight Teal"></button>
+    </div>
+  </div>
+
+  <!-- navigation -->
+  <div class="nav-bar">
+    <button class="nav-btn active" id="btnHome"><i class="fas fa-house" style="margin-right: 8px;"></i>Home</button>
+    <button class="nav-btn" id="btnSkills"><i class="fas fa-wrench" style="margin-right: 8px;"></i>Skills</button>
+    <button class="nav-btn" id="btnProjects"><i class="fas fa-folder-open" style="margin-right: 8px;"></i>Projects & Achievements</button>
+  </div>
+
+  <!-- ************ HOME PAGE ************ -->
+  <div id="homePage" class="page active-page">
+    <div class="card">
+      <div class="profile-wrap">
+        <div class="avatar-frame">
+          <!-- Professional profile image -->
+          <img class="profile-img" src="https://image2url.com/r2/default/images/1773568307425-518376b1-db39-412c-8879-4e15ed75f895.jpg" alt="Achlesh Sharma">
+        </div>
+        <div class="name-title">
+          <h1>Achlesh Sharma</h1>
+          <div class="sub">IIM BANGALORE BBA(DBE)</div>
+        </div>
+      </div>
+
+      <!-- Contact details with working LinkedIn link -->
+      <div class="contact-mini">
+        <span><i class="fas fa-map-pin"></i> Nainital / Bangalore</span>
+        <span><i class="fas fa-phone-alt"></i> 7292920747</span>
+        <span><i class="fas fa-envelope"></i> sharmaachlesh18@gmail.com</span>
+        <span>
+          <a href="https://www.linkedin.com/in/achlesh-sharma-a6bb2a386/" target="_blank" rel="noopener noreferrer">
+            <i class="fab fa-linkedin"></i> /in/achlesh-sharma-a6bb2a386
+          </a>
+        </span>
+      </div>
+
+      <!-- education section -->
+      <div class="edu-section">
+        <h2><i class="fas fa-university"></i> Education</h2>
+        <div class="edu-item">
+          <span class="edu-left">Birla Vidya Mandir, Nainital</span>
+          <span class="edu-right">Class X · 96%</span>
+        </div>
+        <div class="edu-item">
+          <span class="edu-left">Trident Public School</span>
+          <span class="edu-right">Class XII · 71.8%</span>
+        </div>
+        <div class="edu-item">
+          <span class="edu-left">IIM Bangalore — BBA (Digital Business & Entrepreneurship)</span>
+          <span class="edu-right">2025 – Present</span>
+        </div>
+      </div>
+
+      <!-- additional highlights -->
+      <div style="display: flex; gap: 1.8rem; margin-top: 1.5rem; color: var(--text-secondary);">
+        <span><i class="fas fa-trophy" style="color: var(--accent);"></i> School Topper (Funtoot Learning)</span>
+        <span><i class="fas fa-futbol" style="color: var(--accent);"></i> Athlete · Football & Cricket</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ************ SKILLS PAGE ************ -->
+  <div id="skillsPage" class="page">
+    <div class="card">
+      <h2 class="skills-header"><i class="fas fa-code"></i> Technical & Professional Skills</h2>
+      <div class="skills-compact">
+        <div class="skill-row">
+          <h3><i class="fas fa-file-excel"></i> Core Tools</h3>
+          <div class="skill-badges">
+            <span>Microsoft Excel (Basic)</span>
+            <span>Powerpoint Presentations</span>
+            <span>Google Sheets</span>
+          </div>
+        </div>
+        <div class="skill-row">
+          <h3><i class="fas fa-laptop-code"></i> Web Languages</h3>
+          <div class="skill-badges">
+            <span>HTML5</span>
+            <span>CSS3</span>
+            <span>Responsive Design (Basics)</span>
+          </div>
+        </div>
+        <div class="skill-row">
+          <h3><i class="fas fa-users"></i> Interpersonal & Management</h3>
+          <div class="skill-badges">
+            <span>Leadership Skills</span>
+            <span>Team Management</span>
+            <span>Collaborative Mindset</span>
+            <span>Problem Solving</span>
+            </div>
+        </div>
+        <div class="skill-row">
+          <h3><i class="fas fa-heart"></i> Hobbies & Interests</h3>
+          <div class="skill-badges">
+            <span class="hobby-badge"><i class="fas fa-futbol"></i> Football</span>
+           <span class="hobby-badge"><i class="fas fa-futbol"></i> Cricket</span>
+            <span class="hobby-badge"><i class="fas fa-users"></i> Mixed Martial Arts</span>
+              <span class="hobby-badge"><i class="fas fa-futbol"></i> Finance</span>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ************ PROJECTS & ACHIEVEMENTS PAGE (with actual PDF) ************ -->
+  <div id="projectsPage" class="page">
+    <div class="card">
+      <h2 class="skills-header"><i class="fas fa-award"></i> Projects & Achievements</h2>
+      <div class="proj-achieve-grid">
+        <!-- LEFT: project detail with actual PDF link -->
+        <div class="project-block">
+          <h3><i class="fas fa-rocket"></i> Featured Project</h3>
+          <div class="project-card">
+            <h4>Venturing On A Budget: ₹250 Venture</h4>
+            <div class="project-tags">
+              <span>Entrepreneurship</span>
+              <span>Field Work</span>
+              <span>Business Report</span>
+            </div>
+            <p>Designed and executed a micro‑venture with a capital of only ₹250, operating for 30 minutes in a real market. Developed a comprehensive report analyzing sales, customer interaction, and key learnings — a hands‑on exercise in lean startup methodology.</p>
+            
+            <!-- PDF Link Button - opens the actual project report -->
+            <a href="https://pdfhost.io/v/ApfZsaWbWF_PJ12X_ASMT1_Achlesh_Sharma_25120059__2_" class="pdf-link" target="_blank" rel="noopener noreferrer">
+              <i class="fas fa-file-pdf"></i> View Full Project Report (PDF)
+            </a>
+            <p style="font-size: 0.8rem; margin-top: 0.5rem; color: var(--text-secondary);">Complete 7‑page report with photos and financials</p>
+          </div>
+        </div>
+
+        <!-- RIGHT: achievements -->
+        <div class="achievement-block">
+          <h3><i class="fas fa-medal"></i> Certifications & Accolades</h3>
+          <ul class="achievement-list">
+            <li><i class="fas fa-check-circle"></i> <strong>Cambridge Assessment English</strong> — Movers Certificate</li>
+            <li><i class="fas fa-star"></i> <strong>Funtoot Learning Program</strong> — School Topper Recognition</li>
+            <li><i class="fas fa-futbol"></i> <strong>Inter-School Football Team</strong> — Consistent Selection (2015–2019)</li>
+            <li><i class="fas fa-crown"></i> <strong>Player Of The Tournament</strong> — Inter-House Cricket & Football (2018)</li>
+          </ul>
+          <div style="margin-top: 1.2rem; background: var(--bg-element); border-radius: 16px; padding: 0.8rem 1.2rem; color: var(--text-secondary);">
+            <i class="fas fa-futbol" style="color: var(--accent);"></i>  Football Enthusiast · Captained School Team
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    <span>—— Achlesh Sharma · Driven & Curious · IIM Bangalore ——</span>
+  </div>
+</div>
+
+<!-- JavaScript for star generation, page switching, and theme switcher -->
+<script>
+  (function() {
+    // ----- generate starfall stars -----
+    function createStars() {
+      const container = document.getElementById('starContainer');
+      if (!container) return;
+      container.innerHTML = '';
+      const starCount = 40;
+      for (let i = 0; i < starCount; i++) {
+        const star = document.createElement('div');
+        star.classList.add('star');
+        const sizeClass = 'star' + (Math.floor(Math.random() * 5) + 1);
+        star.classList.add(sizeClass);
+        star.style.left = Math.random() * 100 + '%';
+        star.style.animationDelay = Math.random() * 15 + 's';
+        star.style.transform = `rotate(${Math.random() * 30 - 15}deg)`;
+        container.appendChild(star);
+      }
+    }
+    createStars();
+
+    // ----- page navigation -----
+    const homeBtn = document.getElementById('btnHome');
+    const skillsBtn = document.getElementById('btnSkills');
+    const projectsBtn = document.getElementById('btnProjects');
+    const homePage = document.getElementById('homePage');
+    const skillsPage = document.getElementById('skillsPage');
+    const projectsPage = document.getElementById('projectsPage');
+    const pages = [homePage, skillsPage, projectsPage];
+    const navs = [homeBtn, skillsBtn, projectsBtn];
+
+    function setActive(pageIndex) {
+      pages.forEach(p => p.classList.remove('active-page'));
+      navs.forEach(b => b.classList.remove('active'));
+      pages[pageIndex].classList.add('active-page');
+      navs[pageIndex].classList.add('active');
+    }
+
+    homeBtn.addEventListener('click', () => setActive(0));
+    skillsBtn.addEventListener('click', () => setActive(1));
+    projectsBtn.addEventListener('click', () => setActive(2));
+
+    // ----- theme switcher -----
+    const themeBtns = document.querySelectorAll('.theme-btn');
+    const body = document.body;
+
+    function setTheme(themeClass) {
+      body.classList.remove('theme-blue', 'theme-emerald', 'theme-graphite', 'theme-copper', 'theme-teal');
+      body.classList.add(themeClass);
+    }
+
+    themeBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const theme = btn.getAttribute('data-theme');
+        if (theme) setTheme(theme);
+      });
+    });
+
+    setTheme('theme-blue');
+  })();
+</script>
+
+<!-- focus style -->
+<style>
+  .nav-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+  .theme-btn:focus-visible { outline: 2px solid white; }
+</style>
+</body>
+</html>
